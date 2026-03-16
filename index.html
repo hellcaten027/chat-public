@@ -2,10 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>voxiom.io pro · fixed verification · by supramk4_arab_[SV]</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <title>voxchat · streamlined</title>
+    <!-- Fonts (system-friendly) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         body {
             background: #0a0f0a;
             min-height: 100vh;
@@ -14,28 +16,28 @@
             justify-content: center;
             padding: 1rem;
             position: relative;
-            overflow-x: hidden;
         }
+        /* Animated background */
         body::before {
             content: '';
             position: absolute;
-            width: 100%;
-            height: 100%;
-            background: repeating-linear-gradient(0deg, #00ff8020 0px, #00ff8020 2px, transparent 2px, transparent 8px);
-            pointer-events: none;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 30% 40%, #00ff8020, transparent 40%),
+                        radial-gradient(circle at 70% 60%, #00aaff20, transparent 40%);
+            animation: moveBG 20s infinite alternate;
             z-index: -1;
-            animation: scan 10s linear infinite;
         }
-        @keyframes scan {
-            0% { transform: translateY(0); }
-            100% { transform: translateY(8px); }
+        @keyframes moveBG {
+            0% { transform: scale(1) translate(0,0); opacity: 0.5; }
+            100% { transform: scale(1.1) translate(-2%, -2%); opacity: 1; }
         }
 
         .glass-card {
-            background: #0f130f;
+            background: rgba(15, 20, 15, 0.8);
+            backdrop-filter: blur(10px);
             border: 2px solid #00ff80;
             box-shadow: 0 0 30px #00ff8040, inset 0 0 10px #00ff8020;
-            border-radius: 0;
+            border-radius: 1.5rem;
             color: #00ff80;
         }
 
@@ -58,14 +60,15 @@
         .auth-card h1 {
             font-size: 3rem;
             text-shadow: 0 0 10px #00ff80;
-            letter-spacing: 4px;
+            letter-spacing: 2px;
         }
         .auth-card p { color: #a0ffc0; margin-bottom: 1.5rem; }
         .auth-form { display: flex; flex-direction: column; gap: 1rem; }
         .auth-form input {
-            background: #1a1f1a;
+            background: #1a2a1a;
             border: 1px solid #00ff80;
-            padding: 0.8rem 1.2rem;
+            border-radius: 2rem;
+            padding: 0.9rem 1.2rem;
             color: #00ff80;
             outline: none;
         }
@@ -73,57 +76,96 @@
         .auth-form button, .verification-card button {
             background: #003d1a;
             border: 1px solid #00ff80;
-            padding: 0.8rem;
+            border-radius: 2rem;
+            padding: 0.9rem;
             color: #00ff80;
             font-weight: bold;
             cursor: pointer;
             transition: 0.2s;
             width: 100%;
             margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
         .auth-form button:hover, .verification-card button:hover {
             background: #006633;
         }
         .auth-toggle span { color: #a0ffc0; cursor: pointer; text-decoration: underline; }
-        .error-message { color: #ff4d4d; }
+        .error-message { color: #ff8a8a; }
         .hidden { display: none !important; }
         .social-buttons { display: flex; gap: 1rem; margin-top: 1rem; }
-        .social-btn { flex:1; background:#1a2a1a; border:1px solid #00ff80; padding:0.6rem; color:#00ff80; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .social-btn { flex:1; background:#1a2a1a; border:1px solid #00ff80; border-radius:2rem; padding:0.8rem; color:#00ff80; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; }
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #a0ffc0;
+            margin-top: 0.5rem;
+        }
+        .remember-me input { width: 18px; height: 18px; accent-color: #00ff80; }
+
+        /* Discord button */
+        .discord-link {
+            margin-top: 1rem;
+        }
+        .discord-btn {
+            background: #5865F2;
+            border: none;
+            border-radius: 2rem;
+            padding: 0.8rem;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            text-decoration: none;
+        }
+        .discord-btn:hover { background: #4752c4; }
 
         .chat-card {
-            max-width: 1200px;
+            max-width: 1000px;
             width: 100%;
             height: 90vh;
             border: 2px solid #00ff80;
-            background: #0f130f;
+            background: rgba(10, 15, 10, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
             display: flex;
             flex-direction: column;
+            overflow: hidden;
             box-shadow: 0 0 50px #00ff8040;
         }
+        @media (max-width: 768px) { .chat-card { height: 95vh; } }
+
         .chat-header {
-            padding: 0.8rem 1.5rem;
+            padding: 1rem 2rem;
             border-bottom: 2px solid #00ff80;
             display: flex;
             align-items: center;
             justify-content: space-between;
             color: #00ff80;
-            background: #0a0f0a;
+            background: rgba(0,0,0,0.3);
         }
         .chat-header h2 { font-size: 2rem; text-shadow: 0 0 5px #00ff80; }
-        .voxiom-link a {
-            color: #00ff80;
-            text-decoration: none;
-            border: 1px solid #00ff80;
-            padding: 0.3rem 1rem;
+        .header-actions {
+            display: flex;
+            gap: 0.5rem;
         }
-        .voxiom-link a:hover { background: #003d1a; }
         .header-actions button {
             background: #1a2a1a;
             border: 1px solid #00ff80;
-            padding: 0.4rem 1rem;
+            border-radius: 2rem;
+            padding: 0.5rem 1rem;
             color: #00ff80;
             cursor: pointer;
-            margin-left: 0.5rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
         }
         .header-actions button:hover { background: #006633; }
 
@@ -134,256 +176,187 @@
             display: flex;
             flex-direction: column;
             gap: 0.8rem;
-            background: #0f130f;
-            will-change: transform;
-            contain: content;
+            background: rgba(0,0,0,0.2);
+            scrollbar-width: thin;
+            scrollbar-color: #00ff80 #1a2a1a;
         }
+        .messages-area::-webkit-scrollbar { width: 8px; }
+        .messages-area::-webkit-scrollbar-track { background: #1a2a1a; }
+        .messages-area::-webkit-scrollbar-thumb { background: #00ff80; border-radius: 4px; }
+
+        .date-divider {
+            text-align: center;
+            color: #a0ffc0;
+            font-size: 0.9rem;
+            margin: 0.5rem 0;
+            position: relative;
+        }
+        .date-divider::before, .date-divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 30%;
+            height: 1px;
+            background: #00ff80;
+        }
+        .date-divider::before { left: 0; }
+        .date-divider::after { right: 0; }
+
         .message-bubble {
             max-width: 70%;
-            padding: 0.8rem 1.2rem;
+            padding: 0.9rem 1.4rem;
             align-self: flex-start;
             background: #1a2a1a;
             border: 1px solid #00ff80;
-            color: var(--msg-color, #a0ffc0);
-            background-color: var(--msg-bg, #1a2a1a);
+            border-radius: 1.8rem 1.8rem 1.8rem 0.3rem;
+            color: #e0f0e0;
             position: relative;
-            box-shadow: 0 0 8px #00ff8020;
-            transition: transform 0.1s;
+            box-shadow: 0 4px 10px rgba(0,255,128,0.2);
+            transition: 0.2s;
         }
         .message-bubble.own {
             align-self: flex-end;
-            background: var(--own-msg-bg, #003d1a);
-            color: var(--own-msg-color, white);
+            background: #003d1a;
+            border-radius: 1.8rem 1.8rem 0.3rem 1.8rem;
+            color: white;
         }
-        /* VIP8-9 special styles */
-        .message-bubble.vip-high {
-            border-width: 3px;
-            border-color: #ffaa00;
-            box-shadow: 0 0 20px #ffaa00, inset 0 0 10px #ffaa00;
-        }
-        .message-bubble.vip-ultra {
-            border-width: 3px;
-            border-color: #ff00ff;
-            box-shadow: 0 0 30px #ff00ff, inset 0 0 15px #ff00ff;
-            animation: vipGlow 2s infinite;
-        }
-        @keyframes vipGlow {
-            0% { box-shadow: 0 0 20px #ff00ff; }
-            50% { box-shadow: 0 0 40px #ff00ff; }
-            100% { box-shadow: 0 0 20px #ff00ff; }
-        }
+        /* Role/VIP animations */
+        .message-bubble.role-owner { border-color: #ff4500; box-shadow: 0 0 15px #ff4500; animation: pulseOwner 2s infinite; }
+        .message-bubble.role-admin { border-color: #ff0000; box-shadow: 0 0 15px #ff0000; animation: pulseAdmin 2s infinite; }
+        .message-bubble.role-mod { border-color: #00ff00; box-shadow: 0 0 15px #00ff00; animation: pulseMod 2s infinite; }
+        .message-bubble.role-vip { border-color: #ffaa00; box-shadow: 0 0 20px #ffaa00; animation: pulseVip 1.5s infinite; }
+
+        @keyframes pulseOwner { 0% { box-shadow: 0 0 10px #ff4500; } 50% { box-shadow: 0 0 25px #ff4500; } 100% { box-shadow: 0 0 10px #ff4500; } }
+        @keyframes pulseAdmin { 0% { box-shadow: 0 0 10px #ff0000; } 50% { box-shadow: 0 0 25px #ff0000; } }
+        @keyframes pulseMod { 0% { box-shadow: 0 0 10px #00ff00; } 50% { box-shadow: 0 0 25px #00ff00; } }
+        @keyframes pulseVip { 0% { box-shadow: 0 0 15px #ffaa00; } 50% { box-shadow: 0 0 30px #ffaa00; } }
 
         .message-header {
             display: flex;
             justify-content: space-between;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             margin-bottom: 0.3rem;
-            color: #00ff80;
+            color: #a0ffc0;
             align-items: center;
-            cursor: pointer; /* clickable name */
-        }
-        .message-time { opacity: 0.8; }
-        .modified-tag {
-            font-size: 0.6rem;
-            font-style: italic;
-            color: #88ff88;
-            margin-left: 0.3rem;
-        }
-        .vip-prefix {
-            display: inline-block;
-            animation: vipPulse 2s infinite;
-            font-weight: bold;
-            margin-right: 4px;
-        }
-        @keyframes vipPulse {
-            0% { text-shadow: 0 0 2px #00ff80; color: #a0ffc0; }
-            50% { text-shadow: 0 0 10px #ffaa00; color: #ffaa00; }
-            100% { text-shadow: 0 0 2px #00ff80; color: #a0ffc0; }
-        }
-        .role-badge {
-            display: inline-block;
-            font-size: 0.6rem;
-            padding: 2px 4px;
-            border: 1px solid #00ff80;
-            margin-left: 4px;
-            color: #00ff80;
-        }
-        .message-actions {
-            position: absolute;
-            top: -8px;
-            right: -8px;
-            display: flex;
-            gap: 4px;
-        }
-        .edit-btn, .delete-btn, .admin-edit-btn, .admin-delete-btn {
-            background: #00ff80;
-            color: black;
-            border: none;
-            width: 24px;
-            height: 24px;
-            font-size: 12px;
             cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
         }
-        .edit-btn { background: #ffff80; }
-        .delete-btn { background: #ff4d4d; }
-        .admin-edit-btn { background: #ffaa00; }
-        .admin-delete-btn { background: #ff5500; }
-        .message-bubble.own:hover .edit-btn,
-        .message-bubble.own:hover .delete-btn {
-            display: flex;
-        }
-        .message-bubble:not(.own):hover .admin-edit-btn,
-        .message-bubble:not(.own):hover .admin-delete-btn {
-            display: flex;
-        }
+        .message-time { opacity: 0.7; }
+        .modified-tag { font-size: 0.6rem; font-style: italic; color: #88ff88; margin-left: 0.3rem; }
 
         .input-area {
-            padding: 1rem 1.5rem;
+            padding: 1rem 2rem;
             border-top: 2px solid #00ff80;
             display: flex;
             gap: 0.5rem;
-            background: #0a0f0a;
+            background: rgba(0,0,0,0.3);
         }
         #messageInput {
             flex: 1;
-            background: #1a1f1a;
+            background: #1a2a1a;
             border: 1px solid #00ff80;
-            padding: 0.8rem 1.5rem;
+            border-radius: 2rem;
+            padding: 0.9rem 1.5rem;
             color: #00ff80;
             outline: none;
         }
         #sendBtn {
             background: #003d1a;
             border: 1px solid #00ff80;
-            width: 3rem;
+            border-radius: 2rem;
+            width: 3.2rem;
             color: #00ff80;
             cursor: pointer;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
         #sendBtn:hover { background: #006633; }
-        .status-badge { color: #00ff80; text-align: center; padding: 1rem; }
 
-        /* Large admin modal with multi‑select */
+        /* Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.95);
+            background: rgba(0,0,0,0.9);
             align-items: center;
             justify-content: center;
             z-index: 2000;
         }
         .modal.active { display: flex; }
         .modal-content {
-            background: #0f130f;
+            background: #0f1a0f;
             border: 2px solid #00ff80;
+            border-radius: 2rem;
             padding: 2rem;
-            max-width: 900px;
-            width: 95%;
-            max-height: 80vh;
-            overflow-y: auto;
+            max-width: 450px;
+            width: 90%;
             color: #00ff80;
         }
-        .modal-content h2, .modal-content h3 { margin-bottom: 1rem; }
-        .modal-content input, .modal-content select, .modal-content textarea {
+        .modal-content h2 { margin-bottom: 1rem; text-align: center; }
+        .modal-content input, .modal-content select {
             width: 100%;
             padding: 0.8rem;
             margin-bottom: 1rem;
-            background: #1a1f1a;
+            background: #1a2a1a;
             border: 1px solid #00ff80;
+            border-radius: 2rem;
             color: #00ff80;
         }
         .modal-content button {
             background: #003d1a;
             border: 1px solid #00ff80;
+            border-radius: 2rem;
             padding: 0.8rem;
             color: #00ff80;
             cursor: pointer;
-            margin-right: 0.5rem;
+            width: 100%;
+            margin-bottom: 0.5rem;
         }
-        .modal-content button.cancel { background: #4d0000; }
-        .modal-content button.danger { background: #b33c3c; }
-        .user-row {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 0.8rem;
-            border-bottom: 1px solid #00ff80;
-            flex-wrap: wrap;
-        }
-        .user-row input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            accent-color: #00ff80;
-        }
-        .user-row button {
-            background: #1a2a1a;
-            border: 1px solid #00ff80;
-            padding: 0.2rem 0.8rem;
-            color: #00ff80;
-            cursor: pointer;
-        }
-        .bulk-actions {
+        .modal-content button.cancel { background: #4d1a1a; }
+
+        .status-selector {
             display: flex;
             gap: 1rem;
-            margin: 1rem 0;
-            align-items: center;
+            margin-bottom: 1rem;
+            justify-content: center;
         }
+        .status-option {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+        .status-option.green { background: #00ff00; }
+        .status-option.gray { background: #888; }
+        .status-option.red { background: #ff0000; }
+        .status-option.dnd { background: #ff0000; position: relative; }
+        .status-option.dnd::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            background: black;
+            top: 17px;
+            left: 7px;
+            transform: rotate(45deg);
+        }
+        .status-option:hover { border-color: white; }
 
         .footer {
             position: fixed;
             bottom: 5px;
             right: 10px;
-            color: #00ff80;
+            color: #a0ffc0;
             font-size: 0.8rem;
             opacity: 0.6;
-            text-shadow: 0 0 5px #00ff80;
+            z-index: 3000;
         }
         .license {
             position: fixed;
             bottom: 5px;
             left: 10px;
-            color: #00ff80;
+            color: #a0ffc0;
             font-size: 0.7rem;
             opacity: 0.5;
-        }
-
-        /* Profile modal with tabs */
-        .profile-tabs {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            border-bottom: 1px solid #00ff80;
-        }
-        .profile-tab {
-            padding: 0.5rem 1rem;
-            cursor: pointer;
-            background: #1a2a1a;
-        }
-        .profile-tab.active {
-            background: #003d1a;
-        }
-        .profile-pane { display: none; }
-        .profile-pane.active { display: block; }
-
-        /* User profile modal (click on name) */
-        .user-profile-content {
-            max-width: 500px;
-        }
-        .user-profile-content p {
-            margin: 0.5rem 0;
-            word-wrap: break-word;
-        }
-
-        /* Spam notice */
-        .spam-note {
-            color: #a0ffc0;
-            font-size: 0.8rem;
-            margin-top: 1rem;
-            opacity: 0.8;
         }
     </style>
 
@@ -394,73 +367,57 @@
 </head>
 <body>
     <div class="footer">created by supramk4_arab_[SV]</div>
-    <div class="license">© 2026 voxchat · MIT License</div>
+    <div class="license">© 2026 voxchat</div>
 
     <!-- Auth Card -->
-    <div id="authContainer" class="auth-card glass-card">
+    <div id="authContainer" class="auth-card">
         <h1>VOXCHAT</h1>
-        <p>talk while you play</p>
+        <p>talk while playing</p>
         <div class="auth-form">
             <h2 id="formTitle">SIGN IN</h2>
             <input type="email" id="loginInput" placeholder="EMAIL">
             <input type="password" id="passwordInput" placeholder="PASSWORD">
             <input type="text" id="nameInput" placeholder="DISPLAY NAME" class="hidden">
-            <button id="authActionBtn">SIGN IN</button>
+            <button id="authActionBtn"><span>🔑</span> SIGN IN</button>
+            <div class="remember-me">
+                <input type="checkbox" id="rememberMe" checked>
+                <label for="rememberMe">Remember me</label>
+            </div>
             <div class="auth-toggle">
                 <span id="toggleAuthMode">NEED AN ACCOUNT? SIGN UP</span>
             </div>
             <div id="authError" class="error-message"></div>
         </div>
         <div class="social-buttons">
-            <button id="googleSignInBtn" class="social-btn">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="20" height="20">
-                    <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12c0-6.627,5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24c0,11.045,8.955,20,20,20c11.045,0,20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
-                    <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
-                    <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.202,0-9.619-3.317-11.283-7.946l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
-                    <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.571c0.001-0.001,0.002-0.001,0.003-0.002l6.19,5.238C36.971,39.205,44,34,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
-                </svg>
-                Google
-            </button>
-            <button id="anonymousSignInBtn" class="social-btn">
-                <span style="font-size:1.4rem;">👤</span> Guest
-            </button>
+            <button id="googleSignInBtn" class="social-btn">🌐 Google</button>
+            <button id="anonymousSignInBtn" class="social-btn">👤 Guest</button>
+        </div>
+        <div class="discord-link">
+            <a href="https://discord.com/invite/GBFtRcY" target="_blank" class="discord-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95 0 .02.01.04.03.05 1.8 1.32 3.53 2.12 5.23 2.65.03.01.06 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.08.22.17.33.25.03.03.02.09-.01.11-.52.3-1.07.56-1.64.78-.04.01-.05.06-.04.09.31.61.67 1.19 1.07 1.74.02.02.05.03.07.02 1.7-.53 3.43-1.33 5.23-2.65.02-.01.03-.03.03-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12 0-1.17.84-2.12 1.89-2.12 1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12 0-1.17.84-2.12 1.89-2.12 1.06 0 1.9.96 1.89 2.12 0 1.17-.83 2.12-1.89 2.12z"/></svg>
+                Join Discord
+            </a>
         </div>
     </div>
 
-    <!-- Email Verification Card (with styled buttons and spam notice) -->
-    <div id="verificationContainer" class="auth-card glass-card hidden">
+    <!-- Email Verification Card (styled like auth) -->
+    <div id="verificationContainer" class="auth-card hidden">
         <h2>VERIFY EMAIL</h2>
-        <p>We've sent a verification link to <span id="verificationEmail"></span>.</p>
-        <button id="resendVerificationBtn">RESEND</button>
-        <button id="checkVerificationBtn">I VERIFIED</button>
-        <button id="logoutFromVerification">LOGOUT</button>
+        <p>Link sent to <span id="verificationEmail"></span>.</p>
+        <button id="resendVerificationBtn"><span>🔄</span> RESEND</button>
+        <button id="checkVerificationBtn"><span>✅</span> I VERIFIED</button>
+        <button id="logoutFromVerification" class="cancel">🚪 LOGOUT</button>
         <div id="verificationError" class="error-message"></div>
-        <p class="spam-note">📧 Check your spam folder if you don't see the email.</p>
-    </div>
-
-    <!-- Guest Name Selection Modal -->
-    <div id="guestNameModal" class="modal">
-        <div class="modal-content">
-            <h2>CHOOSE YOUR GUEST NAME</h2>
-            <input type="text" id="guestNameInput" placeholder="ENTER NAME (NO SPACES)" maxlength="20">
-            <p style="font-size:0.8rem;">Your name will appear as: chosenName#GU</p>
-            <button id="saveGuestNameBtn">SAVE</button>
-            <button id="skipGuestNameBtn" class="cancel">SKIP (RANDOM)</button>
-        </div>
+        <p class="spam-note">📧 Check your spam folder.</p>
     </div>
 
     <!-- Chat Card -->
     <div id="chatContainer" class="chat-card hidden">
         <div class="chat-header">
             <h2>#GENERAL</h2>
-            <div class="voxiom-link">
-                <a href="https://voxiom.io" target="_blank">VOXIOM.IO</a>
-            </div>
             <div class="header-actions">
-                <button id="adminPanelBtn" class="admin-only">👑 ADMIN</button>
-                <button id="profileBtn">✎ PROFILE</button>
-                <button id="clearChatBtn" class="admin-only">🗑️ CLEAR</button>
-                <button id="logoutBtn">🚪 LOGOUT</button>
+                <button id="profileBtn"><span>✎</span> PROFILE</button>
+                <button id="logoutBtn"><span>🚪</span> LOGOUT</button>
             </div>
         </div>
         <div id="messagesContainer" class="messages-area"></div>
@@ -470,103 +427,35 @@
         </div>
     </div>
 
-    <!-- Admin Panel Modal (big, with multi‑select) -->
-    <div id="adminModal" class="modal">
-        <div class="modal-content">
-            <h2>ADMIN PANEL</h2>
-            <input type="text" id="adminSearch" placeholder="SEARCH BY EMAIL OR NAME...">
-            <div class="bulk-actions">
-                <select id="bulkActionSelect">
-                    <option value="">BULK ACTION</option>
-                    <option value="ban">BAN</option>
-                    <option value="mute">MUTE</option>
-                    <option value="delete">DELETE</option>
-                </select>
-                <input type="text" id="bulkReason" placeholder="REASON (OPTIONAL)">
-                <button id="applyBulkBtn">APPLY</button>
-                <button id="selectAllBtn">SELECT ALL</button>
-                <button id="deselectAllBtn">DESELECT ALL</button>
-            </div>
-            <div id="usersList" style="max-height: 400px; overflow-y: auto;"></div>
-            <button id="closeAdminModal" class="cancel">CLOSE</button>
-        </div>
-    </div>
-
-    <!-- Profile Edit Modal (with tabs) -->
+    <!-- Profile Modal -->
     <div id="profileModal" class="modal">
         <div class="modal-content">
             <h2>EDIT PROFILE</h2>
-            <div class="profile-tabs">
-                <div class="profile-tab active" data-tab="basic">BASIC</div>
-                <div class="profile-tab" data-tab="appearance">APPEARANCE</div>
-                <div class="profile-tab" data-tab="security">SECURITY</div>
-                <div class="profile-tab" data-tab="description">ABOUT</div>
+            <input type="text" id="editDisplayName" placeholder="DISPLAY NAME">
+            <div class="status-selector">
+                <div class="status-option green" data-status="online"></div>
+                <div class="status-option gray" data-status="offline"></div>
+                <div class="status-option red" data-status="invisible"></div>
+                <div class="status-option dnd" data-status="dnd"></div>
             </div>
-            <!-- Basic pane -->
-            <div id="profileBasic" class="profile-pane active">
-                <input type="text" id="editDisplayName" placeholder="DISPLAY NAME">
-                <p><small>Your name will be shown in chat.</small></p>
-            </div>
-            <!-- Appearance pane (VIP restricted) -->
-            <div id="profileAppearance" class="profile-pane">
-                <div id="vipAppearanceMsg"></div>
-                <label>MESSAGE TEXT COLOR</label>
-                <input type="color" id="editMsgColor" value="#a0ffc0" disabled>
-                <label>MESSAGE BACKGROUND COLOR</label>
-                <input type="color" id="editMsgBg" value="#1a2a1a" disabled>
-                <label>OWN MESSAGE TEXT COLOR</label>
-                <input type="color" id="editOwnMsgColor" value="#ffffff" disabled>
-                <label>OWN MESSAGE BACKGROUND COLOR</label>
-                <input type="color" id="editOwnMsgBg" value="#003d1a" disabled>
-                <p><small>VIP3+ can set name color, VIP7+ can set background.</small></p>
-            </div>
-            <!-- Security pane -->
-            <div id="profileSecurity" class="profile-pane">
-                <input type="email" id="editEmail" placeholder="NEW EMAIL">
-                <input type="password" id="editPassword" placeholder="NEW PASSWORD">
-                <input type="password" id="editConfirmPassword" placeholder="CONFIRM PASSWORD">
-            </div>
-            <!-- Description pane -->
-            <div id="profileDescription" class="profile-pane">
-                <textarea id="editDescription" placeholder="ABOUT YOU (MAX 500 CHARS)" maxlength="500" rows="5"></textarea>
-                <p><small>Tell others about yourself.</small></p>
-            </div>
-            <button id="saveProfileBtn">SAVE CHANGES</button>
+            <label>Voxiom Detection (simulated)</label>
+            <input type="checkbox" id="voxiomDetectCheckbox">
+            <label>Voxiom Gems (manual)</label>
+            <input type="number" id="voxiomGemsInput" value="0" min="0">
+            <label>Voxiom Tab URL (optional)</label>
+            <input type="url" id="voxiomUrlInput" placeholder="https://voxiom.io">
+            <button id="saveProfileBtn">SAVE</button>
             <button id="closeProfileModal" class="cancel">CANCEL</button>
-            <div id="profileError" class="error-message"></div>
-        </div>
-    </div>
-
-    <!-- User Profile Modal (click on name) -->
-    <div id="userProfileModal" class="modal">
-        <div class="modal-content user-profile-content">
-            <h2 id="userProfileName">USER</h2>
-            <p><strong>Role:</strong> <span id="userProfileRole"></span></p>
-            <p><strong>VIP Level:</strong> <span id="userProfileVip"></span></p>
-            <p><strong>Email:</strong> <span id="userProfileEmail"></span> <span id="emailPrivateNote" style="color:#888;">(private)</span></p>
-            <p><strong>Region:</strong> <span id="userProfileRegion"></span></p>
-            <p><strong>Joined:</strong> <span id="userProfileCreated"></span></p>
-            <p><strong>About:</strong> <span id="userProfileDescription"></span></p>
-            <button id="closeUserProfileModal" class="cancel">CLOSE</button>
-        </div>
-    </div>
-
-    <!-- Single Action Modal (for reason, used by both single and bulk) -->
-    <div id="actionModal" class="modal">
-        <div class="modal-content">
-            <h3 id="actionTitle">ACTION</h3>
-            <p id="actionUserInfo"></p>
-            <input type="number" id="actionDuration" placeholder="DURATION (MINUTES)" value="20" style="display:none;">
-            <textarea id="actionReason" placeholder="REASON (OPTIONAL)" rows="3"></textarea>
-            <div style="display: flex; gap: 10px;">
-                <button id="actionConfirmBtn">CONFIRM</button>
-                <button id="actionCancelBtn" class="cancel">CANCEL</button>
-            </div>
         </div>
     </div>
 
     <script>
         (function() {
+            // Protocol warning
+            if (window.location.protocol !== 'http:' && window.location.protocol !== 'https:') {
+                alert('Please run this app through a local web server (e.g., "python -m http.server 8000")');
+            }
+
             const firebaseConfig = {
                 apiKey: "AIzaSyBcl3PMyIWLOzTAlr-CjySjax2XO8yZk1E",
                 authDomain: "chat-2fcf1.firebaseapp.com",
@@ -582,172 +471,16 @@
             const db = firebase.database();
 
             const usersRef = db.ref('users');
-            const usernamesRef = db.ref('usernames');
             const messagesRef = db.ref('general/messages');
 
             let currentUser = null;
             let unsubscribeMessages = null;
             let isLoginMode = true;
-            let guestNameChosen = false;
+            let lastMessageDate = null;
 
-            const ADMIN_EMAIL = 'hellcaten027@gmail.com'; // owner email
+            const ADMIN_EMAIL = 'hellcaten027@gmail.com';
 
-            // Role hierarchy
-            const permissions = {
-                owner: {
-                    canBan: true,
-                    canMute: true,
-                    canDisable: true,
-                    canDeleteUser: true,
-                    canClearChat: true,
-                    canEditAnyMessage: true,
-                    canDeleteAnyMessage: true,
-                    canSetVIP: true,
-                    canChangeRoles: true,
-                    canAccessAdminPanel: true,
-                    canViewAllEmails: true,
-                },
-                admin: {
-                    canBan: true,
-                    canMute: true,
-                    canDisable: true,
-                    canDeleteUser: false,
-                    canClearChat: true,
-                    canEditAnyMessage: true,
-                    canDeleteAnyMessage: true,
-                    canSetVIP: true,
-                    canChangeRoles: false,
-                    canAccessAdminPanel: true,
-                    canViewAllEmails: false,
-                },
-                mod: {
-                    canBan: true,
-                    canMute: true,
-                    canDisable: false,
-                    canDeleteUser: false,
-                    canClearChat: true,
-                    canEditAnyMessage: false,
-                    canDeleteAnyMessage: false,
-                    canSetVIP: false,
-                    canChangeRoles: false,
-                    canAccessAdminPanel: true,
-                    canViewAllEmails: false,
-                },
-                trialmod: {
-                    canBan: false,
-                    canMute: true,
-                    canDisable: false,
-                    canDeleteUser: false,
-                    canClearChat: false,
-                    canEditAnyMessage: false,
-                    canDeleteAnyMessage: false,
-                    canSetVIP: false,
-                    canChangeRoles: false,
-                    canAccessAdminPanel: true,
-                    canViewAllEmails: false,
-                },
-                member: {
-                    canBan: false,
-                    canMute: false,
-                    canDisable: false,
-                    canDeleteUser: false,
-                    canClearChat: false,
-                    canEditAnyMessage: false,
-                    canDeleteAnyMessage: false,
-                    canSetVIP: false,
-                    canChangeRoles: false,
-                    canAccessAdminPanel: false,
-                    canViewAllEmails: false,
-                }
-            };
-
-            const badWords = [
-                'fuck', 'shit', 'damn', 'ass', 'bitch', 'cunt', 'dick', 'pussy', 
-                'nigger', 'faggot', 'kys', 'nazi', 'aimbot', 'hack', 'cheat', 'retard'
-            ];
-
-            function filterProfanity(text) {
-                let filtered = text;
-                badWords.forEach(word => {
-                    const regex = new RegExp('\\b' + word + '\\b', 'gi');
-                    filtered = filtered.replace(regex, '****');
-                });
-                return filtered;
-            }
-
-            async function punishHateSpeech(user) {
-                if (user.isAnonymous) {
-                    await usersRef.child(user.uid).remove();
-                    await auth.signOut();
-                    alert('Your guest account has been deleted for hate speech.');
-                } else {
-                    const bannedUntil = Date.now() + 20 * 60 * 1000;
-                    await usersRef.child(user.uid).update({
-                        bannedUntil,
-                        banReason: 'Hate speech (auto)',
-                        bannedBy: 'SYSTEM'
-                    });
-                    await auth.signOut();
-                    alert('You have been banned for 20 minutes for hate speech.');
-                }
-            }
-
-            function generateRandomGuestName() {
-                const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-                let suffix = '';
-                for (let i = 0; i < 4; i++) {
-                    suffix += chars.charAt(Math.floor(Math.random() * chars.length));
-                }
-                return 'Guest#' + suffix;
-            }
-
-            // Sound effects
-            function playSendSound() {
-                try {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.frequency.value = 800;
-                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.1);
-                } catch (e) {}
-            }
-
-            function playReceiveSound() {
-                try {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.frequency.value = 600;
-                    gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.1);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.1);
-                } catch (e) {}
-            }
-
-            function playAdminSound() {
-                try {
-                    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-                    const osc = audioCtx.createOscillator();
-                    const gain = audioCtx.createGain();
-                    osc.connect(gain);
-                    gain.connect(audioCtx.destination);
-                    osc.frequency.value = 1200;
-                    gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
-                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.15);
-                    osc.start();
-                    osc.stop(audioCtx.currentTime + 0.15);
-                } catch (e) {}
-            }
-
-            // DOM elements
+            // DOM
             const authContainer = document.getElementById('authContainer');
             const verificationContainer = document.getElementById('verificationContainer');
             const verificationEmail = document.getElementById('verificationEmail');
@@ -764,79 +497,40 @@
             const resendVerificationBtn = document.getElementById('resendVerificationBtn');
             const checkVerificationBtn = document.getElementById('checkVerificationBtn');
             const verificationError = document.getElementById('verificationError');
-            const clearChatBtn = document.getElementById('clearChatBtn');
-            const adminPanelBtn = document.getElementById('adminPanelBtn');
-            const profileBtn = document.getElementById('profileBtn');
             const messagesContainer = document.getElementById('messagesContainer');
             const messageInput = document.getElementById('messageInput');
             const sendBtn = document.getElementById('sendBtn');
             const googleSignInBtn = document.getElementById('googleSignInBtn');
             const anonymousSignInBtn = document.getElementById('anonymousSignInBtn');
-
-            // Modals
-            const guestNameModal = document.getElementById('guestNameModal');
-            const guestNameInput = document.getElementById('guestNameInput');
-            const saveGuestNameBtn = document.getElementById('saveGuestNameBtn');
-            const skipGuestNameBtn = document.getElementById('skipGuestNameBtn');
-            const adminModal = document.getElementById('adminModal');
-            const adminSearch = document.getElementById('adminSearch');
-            const usersListDiv = document.getElementById('usersList');
-            const closeAdminModal = document.getElementById('closeAdminModal');
-            const bulkActionSelect = document.getElementById('bulkActionSelect');
-            const bulkReason = document.getElementById('bulkReason');
-            const applyBulkBtn = document.getElementById('applyBulkBtn');
-            const selectAllBtn = document.getElementById('selectAllBtn');
-            const deselectAllBtn = document.getElementById('deselectAllBtn');
-
+            const rememberMe = document.getElementById('rememberMe');
+            const profileBtn = document.getElementById('profileBtn');
             const profileModal = document.getElementById('profileModal');
-            const profileTabs = document.querySelectorAll('.profile-tab');
-            const profilePanes = document.querySelectorAll('.profile-pane');
             const editDisplayName = document.getElementById('editDisplayName');
-            const editEmail = document.getElementById('editEmail');
-            const editPassword = document.getElementById('editPassword');
-            const editConfirmPassword = document.getElementById('editConfirmPassword');
-            const editMsgColor = document.getElementById('editMsgColor');
-            const editMsgBg = document.getElementById('editMsgBg');
-            const editOwnMsgColor = document.getElementById('editOwnMsgColor');
-            const editOwnMsgBg = document.getElementById('editOwnMsgBg');
-            const editDescription = document.getElementById('editDescription');
-            const vipAppearanceMsg = document.getElementById('vipAppearanceMsg');
             const saveProfileBtn = document.getElementById('saveProfileBtn');
             const closeProfileModal = document.getElementById('closeProfileModal');
-            const profileError = document.getElementById('profileError');
-
-            const userProfileModal = document.getElementById('userProfileModal');
-            const userProfileName = document.getElementById('userProfileName');
-            const userProfileRole = document.getElementById('userProfileRole');
-            const userProfileVip = document.getElementById('userProfileVip');
-            const userProfileEmail = document.getElementById('userProfileEmail');
-            const emailPrivateNote = document.getElementById('emailPrivateNote');
-            const userProfileRegion = document.getElementById('userProfileRegion');
-            const userProfileCreated = document.getElementById('userProfileCreated');
-            const userProfileDescription = document.getElementById('userProfileDescription');
-            const closeUserProfileModal = document.getElementById('closeUserProfileModal');
-
-            const actionModal = document.getElementById('actionModal');
-            const actionTitle = document.getElementById('actionTitle');
-            const actionUserInfo = document.getElementById('actionUserInfo');
-            const actionDuration = document.getElementById('actionDuration');
-            const actionReason = document.getElementById('actionReason');
-            const actionConfirmBtn = document.getElementById('actionConfirmBtn');
-            const actionCancelBtn = document.getElementById('actionCancelBtn');
+            const statusOptions = document.querySelectorAll('.status-option');
+            const voxiomDetectCheckbox = document.getElementById('voxiomDetectCheckbox');
+            const voxiomGemsInput = document.getElementById('voxiomGemsInput');
+            const voxiomUrlInput = document.getElementById('voxiomUrlInput');
 
             function showError(msg) { authError.innerText = msg; }
 
-            // Toggle sign in / sign up
+            // Persistence
+            function setPersistence() {
+                return auth.setPersistence(rememberMe.checked ? firebase.auth.Auth.Persistence.LOCAL : firebase.auth.Auth.Persistence.SESSION);
+            }
+
+            // Toggle auth mode
             toggleSpan.addEventListener('click', () => {
                 isLoginMode = !isLoginMode;
                 if (isLoginMode) {
                     formTitle.innerText = 'SIGN IN';
-                    authActionBtn.innerText = 'SIGN IN';
+                    authActionBtn.innerHTML = '<span>🔑</span> SIGN IN';
                     nameInput.classList.add('hidden');
                     toggleSpan.innerText = 'NEED AN ACCOUNT? SIGN UP';
                 } else {
                     formTitle.innerText = 'SIGN UP';
-                    authActionBtn.innerText = 'SIGN UP';
+                    authActionBtn.innerHTML = '<span>📝</span> SIGN UP';
                     nameInput.classList.remove('hidden');
                     toggleSpan.innerText = 'ALREADY HAVE AN ACCOUNT? SIGN IN';
                 }
@@ -849,6 +543,7 @@
                 const pwd = passwordInput.value.trim();
                 if (!email || !pwd) { showError('EMAIL AND PASSWORD REQUIRED'); return; }
                 try {
+                    await setPersistence();
                     await auth.signInWithEmailAndPassword(email, pwd);
                 } catch (e) {
                     showError('INVALID EMAIL OR PASSWORD');
@@ -862,6 +557,7 @@
                 const displayName = nameInput.value.trim();
                 if (!email || !pwd || !displayName) { showError('ALL FIELDS REQUIRED'); return; }
                 try {
+                    await setPersistence();
                     const cred = await auth.createUserWithEmailAndPassword(email, pwd);
                     await cred.user.updateProfile({ displayName });
                     let role = 'member';
@@ -869,26 +565,13 @@
                     await usersRef.child(cred.user.uid).set({
                         email,
                         displayName,
-                        username: displayName,
                         role,
-                        vipLevel: 0,
-                        region: 'Unknown',
-                        createdAt: Date.now(),
-                        lastLogin: Date.now(),
-                        description: '',
-                        bannedUntil: null,
-                        banReason: null,
-                        bannedBy: null,
-                        mutedUntil: null,
-                        muteReason: null,
-                        mutedBy: null,
-                        disabled: false,
-                        msgColor: '#a0ffc0',
-                        msgBg: '#1a2a1a',
-                        ownMsgColor: '#ffffff',
-                        ownMsgBg: '#003d1a'
+                        status: 'online',
+                        voxiomDetect: false,
+                        voxiomGems: 0,
+                        voxiomUrl: '',
+                        createdAt: Date.now()
                     });
-                    await usernamesRef.child(displayName).set(cred.user.uid);
                     await cred.user.sendEmailVerification();
                 } catch (e) {
                     showError(e.message);
@@ -901,232 +584,102 @@
                 else handleEmailPasswordSignUp();
             });
 
-            googleSignInBtn.addEventListener('click', () => {
-                auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).catch(e => showError(e.message));
-            });
-
-            anonymousSignInBtn.addEventListener('click', () => {
-                auth.signInAnonymously().catch(e => showError(e.message));
-            });
-
-            function detachMessageListeners() {
-                if (unsubscribeMessages) {
-                    unsubscribeMessages();
-                    unsubscribeMessages = null;
+            googleSignInBtn.addEventListener('click', async () => {
+                try {
+                    await setPersistence();
+                    await auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+                } catch (e) {
+                    showError(e.message);
                 }
-            }
+            });
 
+            anonymousSignInBtn.addEventListener('click', async () => {
+                try {
+                    await setPersistence();
+                    await auth.signInAnonymously();
+                } catch (e) {
+                    showError(e.message);
+                }
+            });
+
+            // Attach messages
             function attachMessageListeners(user) {
-                detachMessageListeners();
+                if (unsubscribeMessages) unsubscribeMessages();
+                messagesContainer.innerHTML = '<div class="status-badge">✨ LOADING...</div>';
                 unsubscribeMessages = messagesRef.orderByChild('timestamp').limitToLast(50).on('child_added', (snapshot) => {
                     const msg = snapshot.val();
                     if (!msg) return;
                     if (messagesContainer.children.length === 1 && messagesContainer.children[0].classList.contains('status-badge')) {
                         messagesContainer.innerHTML = '';
                     }
-                    appendMessage(snapshot.key, msg, user);
-                    if (msg.uid !== user.uid) {
-                        playReceiveSound();
+                    const msgDate = new Date(msg.timestamp).toLocaleDateString();
+                    if (msgDate !== lastMessageDate) {
+                        const divider = document.createElement('div');
+                        divider.className = 'date-divider';
+                        divider.innerText = `⚡ ${msgDate} ⚡`;
+                        messagesContainer.appendChild(divider);
+                        lastMessageDate = msgDate;
                     }
-                });
+                    const msgDiv = document.createElement('div');
+                    msgDiv.classList.add('message-bubble');
+                    const isOwn = msg.uid === user.uid;
+                    if (isOwn) msgDiv.classList.add('own');
+                    msgDiv.dataset.id = snapshot.key;
 
-                messagesRef.on('child_changed', (snapshot) => {
-                    const msg = snapshot.val();
-                    const msgDiv = document.querySelector(`.message-bubble[data-id="${snapshot.key}"]`);
-                    if (msgDiv && msg) {
-                        const textDiv = msgDiv.querySelector('.message-text');
-                        if (textDiv) textDiv.innerText = escapeHtml(msg.text);
-                        const header = msgDiv.querySelector('.message-header');
-                        const timeSpan = header.querySelector('.message-time');
-                        if (msg.edited && msg.editedAt) {
-                            const editDate = new Date(msg.editedAt).toLocaleTimeString();
-                            if (timeSpan.querySelector('.modified-tag')) {
-                                timeSpan.querySelector('.modified-tag').innerText = `(modified ${editDate})`;
-                            } else {
-                                const modSpan = document.createElement('span');
-                                modSpan.className = 'modified-tag';
-                                modSpan.innerText = `(modified ${editDate})`;
-                                timeSpan.appendChild(modSpan);
-                            }
-                        }
-                    }
-                });
+                    // Add role class for styling (if stored)
+                    if (msg.roleClass) msgDiv.classList.add(msg.roleClass);
 
-                messagesRef.on('child_removed', (snapshot) => {
-                    const key = snapshot.key;
-                    const msgDiv = document.querySelector(`.message-bubble[data-id="${key}"]`);
-                    if (msgDiv) msgDiv.remove();
-                    if (messagesContainer.children.length === 0) {
-                        messagesContainer.innerHTML = '<div class="status-badge">💬 NO MESSAGES YET.</div>';
-                    }
-                });
-            }
+                    const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
+                    const modifiedHtml = msg.edited ? '<span class="modified-tag">(edited)</span>' : '';
 
-            async function appendMessage(key, msg, user) {
-                const msgDiv = document.createElement('div');
-                msgDiv.classList.add('message-bubble');
-                const isOwn = msg.uid === user.uid;
-                if (isOwn) msgDiv.classList.add('own');
-                msgDiv.dataset.id = key;
-
-                if (msg.vipLevel >= 9) {
-                    msgDiv.classList.add('vip-ultra');
-                } else if (msg.vipLevel >= 8) {
-                    msgDiv.classList.add('vip-high');
-                }
-
-                if (msg.msgColor) msgDiv.style.setProperty('--msg-color', msg.msgColor);
-                if (msg.msgBg) msgDiv.style.setProperty('--msg-bg', msg.msgBg);
-                if (msg.ownMsgColor) msgDiv.style.setProperty('--own-msg-color', msg.ownMsgColor);
-                if (msg.ownMsgBg) msgDiv.style.setProperty('--own-msg-bg', msg.ownMsgBg);
-
-                const timeStr = msg.timestamp ? new Date(msg.timestamp).toLocaleTimeString() : '';
-                const modifiedHtml = (msg.edited && msg.editedAt) ? `<span class="modified-tag">(modified ${new Date(msg.editedAt).toLocaleTimeString()})</span>` : '';
-
-                let actionsHtml = '';
-                if (isOwn) {
-                    actionsHtml += `
-                        <button class="edit-btn" onclick="editMessage('${key}')">✎</button>
-                        <button class="delete-btn" onclick="deleteMessage('${key}')">✕</button>
+                    msgDiv.innerHTML = `
+                        <div class="message-header">
+                            <span class="clickable-name">${escapeHtml(msg.name)}</span>
+                            <span class="message-time">${timeStr}${modifiedHtml}</span>
+                        </div>
+                        <div>${escapeHtml(msg.text)}</div>
                     `;
-                } else {
-                    const currentUserProfile = await usersRef.child(user.uid).once('value').then(s => s.val());
-                    const role = currentUserProfile?.role || 'member';
-                    const perm = permissions[role] || permissions.member;
-                    if (perm.canEditAnyMessage) {
-                        actionsHtml += `<button class="admin-edit-btn" onclick="adminEditMessage('${key}')">✎</button>`;
-                    }
-                    if (perm.canDeleteAnyMessage) {
-                        actionsHtml += `<button class="admin-delete-btn" onclick="adminDeleteMessage('${key}')">✕</button>`;
-                    }
-                }
-                if (actionsHtml) {
-                    actionsHtml = `<div class="message-actions">${actionsHtml}</div>`;
-                }
-
-                msgDiv.innerHTML = `
-                    ${actionsHtml}
-                    <div class="message-header">
-                        <span class="clickable-name">${msg.name}</span>
-                        <span class="message-time">${timeStr}${modifiedHtml}</span>
-                    </div>
-                    <div class="message-text">${escapeHtml(msg.text)}</div>
-                `;
-                const header = msgDiv.querySelector('.message-header');
-                const nameContainer = header.querySelector('.clickable-name');
-                nameContainer.onclick = (e) => {
-                    e.stopPropagation();
-                    showUserProfile(msg.uid);
-                };
-                messagesContainer.appendChild(msgDiv);
-                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                    messagesContainer.appendChild(msgDiv);
+                    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+                });
             }
-
-            // Show user profile modal
-            async function showUserProfile(uid) {
-                const snap = await usersRef.child(uid).once('value');
-                const profile = snap.val();
-                if (!profile) return;
-
-                const currentUserProfile = await usersRef.child(currentUser.uid).once('value').then(s => s.val());
-                const canViewEmail = currentUser.uid === uid || currentUserProfile?.role === 'owner' || (currentUserProfile?.role === 'admin' && permissions.admin.canViewAllEmails);
-
-                userProfileName.innerText = profile.displayName || 'Unknown';
-                userProfileRole.innerText = profile.role || 'member';
-                userProfileVip.innerText = profile.vipLevel ? `VIP${profile.vipLevel}` : 'None';
-                if (canViewEmail) {
-                    userProfileEmail.innerText = profile.email || 'N/A';
-                    emailPrivateNote.style.display = 'none';
-                } else {
-                    userProfileEmail.innerText = 'hidden';
-                    emailPrivateNote.style.display = 'inline';
-                }
-                userProfileRegion.innerText = profile.region || 'Unknown';
-                userProfileCreated.innerText = profile.createdAt ? new Date(profile.createdAt).toLocaleDateString() : 'Unknown';
-                userProfileDescription.innerText = profile.description || 'No description.';
-
-                userProfileModal.classList.add('active');
-            }
-
-            closeUserProfileModal.addEventListener('click', () => userProfileModal.classList.remove('active'));
 
             // Auth state
             auth.onAuthStateChanged(async (user) => {
                 if (user) {
+                    currentUser = user;
                     const snap = await usersRef.child(user.uid).once('value');
                     let profile = snap.val();
-                    if (profile) {
-                        if (profile.disabled) {
-                            await auth.signOut();
-                            alert('Your account has been disabled.');
-                            return;
-                        }
-                        if (profile.bannedUntil && profile.bannedUntil > Date.now()) {
-                            const banner = profile.bannedBy || 'ADMIN';
-                            const reason = profile.banReason || 'No reason provided';
-                            const until = new Date(profile.bannedUntil).toLocaleString();
-                            await auth.signOut();
-                            alert(`You have been banned by ${banner}.\nReason: ${reason}\nUntil: ${until}`);
-                            return;
-                        }
-                    } else {
-                        // No profile – create one (for Google sign-in or existing users without profile)
+                    if (!profile && !user.isAnonymous) {
                         let role = 'member';
                         if (user.email === ADMIN_EMAIL) role = 'owner';
                         profile = {
-                            email: user.email || '',
-                            displayName: user.displayName || (user.isAnonymous ? '' : user.email),
-                            username: user.displayName || (user.isAnonymous ? '' : user.email.split('@')[0]),
+                            email: user.email,
+                            displayName: user.displayName || user.email,
                             role,
-                            vipLevel: 0,
-                            region: 'Unknown',
-                            createdAt: Date.now(),
-                            lastLogin: Date.now(),
-                            description: '',
-                            bannedUntil: null,
-                            banReason: null,
-                            bannedBy: null,
-                            mutedUntil: null,
-                            muteReason: null,
-                            mutedBy: null,
-                            disabled: false,
-                            msgColor: '#a0ffc0',
-                            msgBg: '#1a2a1a',
-                            ownMsgColor: '#ffffff',
-                            ownMsgBg: '#003d1a'
+                            status: 'online',
+                            voxiomDetect: false,
+                            voxiomGems: 0,
+                            voxiomUrl: '',
+                            createdAt: Date.now()
                         };
                         await usersRef.child(user.uid).set(profile);
-                    }
-
-                    if (user.isAnonymous && !guestNameChosen) {
-                        if (profile && profile.guestName) {
-                            guestNameChosen = true;
-                        } else {
-                            guestNameModal.classList.add('active');
-                            const saveHandler = async () => {
-                                let chosen = guestNameInput.value.trim().replace(/\s+/g, '_');
-                                if (!chosen) chosen = generateRandomGuestName().replace('Guest#', '');
-                                const finalName = chosen + '#GU';
-                                await usersRef.child(user.uid).update({ guestName: finalName, displayName: finalName });
-                                guestNameChosen = true;
-                                guestNameModal.classList.remove('active');
-                                saveGuestNameBtn.removeEventListener('click', saveHandler);
-                                skipGuestNameBtn.removeEventListener('click', skipHandler);
+                    } else if (user.isAnonymous) {
+                        if (!profile) {
+                            profile = {
+                                displayName: 'guest#' + Math.random().toString(36).substring(2,7),
+                                role: 'guest',
+                                status: 'online',
+                                voxiomDetect: false,
+                                voxiomGems: 0,
+                                voxiomUrl: '',
+                                createdAt: Date.now()
                             };
-                            const skipHandler = async () => {
-                                const random = generateRandomGuestName();
-                                await usersRef.child(user.uid).update({ guestName: random, displayName: random });
-                                guestNameChosen = true;
-                                guestNameModal.classList.remove('active');
-                                saveGuestNameBtn.removeEventListener('click', saveHandler);
-                                skipGuestNameBtn.removeEventListener('click', skipHandler);
-                            };
-                            saveGuestNameBtn.addEventListener('click', saveHandler);
-                            skipGuestNameBtn.addEventListener('click', skipHandler);
-                            return;
+                            await usersRef.child(user.uid).set(profile);
                         }
                     }
 
+                    // Email verification
                     if (!user.isAnonymous && !user.emailVerified) {
                         authContainer.classList.add('hidden');
                         verificationContainer.classList.remove('hidden');
@@ -1136,10 +689,12 @@
                             if (user.emailVerified) {
                                 clearInterval(interval);
                                 verificationContainer.classList.add('hidden');
-                                await loadChat(user);
+                                authContainer.classList.add('hidden');
+                                chatContainer.classList.remove('hidden');
+                                attachMessageListeners(user);
                             }
                         }, 3000);
-                        logoutFromVerification.onclick = () => { auth.signOut().then(() => location.reload()); };
+                        logoutFromVerification.onclick = () => auth.signOut();
                         resendVerificationBtn.onclick = async () => {
                             try {
                                 await user.sendEmailVerification();
@@ -1153,7 +708,9 @@
                             if (user.emailVerified) {
                                 clearInterval(interval);
                                 verificationContainer.classList.add('hidden');
-                                await loadChat(user);
+                                authContainer.classList.add('hidden');
+                                chatContainer.classList.remove('hidden');
+                                attachMessageListeners(user);
                             } else {
                                 verificationError.innerText = 'NOT VERIFIED YET.';
                             }
@@ -1161,419 +718,82 @@
                         return;
                     }
 
-                    await loadChat(user);
+                    authContainer.classList.add('hidden');
+                    verificationContainer.classList.add('hidden');
+                    chatContainer.classList.remove('hidden');
+                    attachMessageListeners(user);
                 } else {
-                    detachMessageListeners();
+                    currentUser = null;
+                    if (unsubscribeMessages) unsubscribeMessages();
                     authContainer.classList.remove('hidden');
                     verificationContainer.classList.add('hidden');
                     chatContainer.classList.add('hidden');
-                    userProfileModal.classList.remove('active');
+                    profileModal.classList.remove('active');
                 }
             });
-
-            async function loadChat(user) {
-                currentUser = user;
-                authContainer.classList.add('hidden');
-                verificationContainer.classList.add('hidden');
-                chatContainer.classList.remove('hidden');
-
-                const profile = await usersRef.child(user.uid).once('value').then(s => s.val()) || {};
-                const role = profile.role || 'member';
-                const perm = permissions[role] || permissions.member;
-
-                if (perm.canAccessAdminPanel) {
-                    adminPanelBtn.classList.remove('hidden');
-                } else {
-                    adminPanelBtn.classList.add('hidden');
-                }
-                if (perm.canClearChat) {
-                    clearChatBtn.classList.remove('hidden');
-                } else {
-                    clearChatBtn.classList.add('hidden');
-                }
-
-                messagesContainer.innerHTML = '<div class="status-badge">✨ LOADING...</div>';
-                attachMessageListeners(user);
-            }
 
             // Send message
             async function sendMessage() {
                 if (!currentUser) return;
-
-                const profile = (await usersRef.child(currentUser.uid).once('value')).val();
-                if (profile && profile.mutedUntil && profile.mutedUntil > Date.now()) {
-                    alert('You are muted.');
-                    return;
-                }
-
                 let text = messageInput.value.trim();
                 if (!text) return;
-
-                const lower = text.toLowerCase();
-                let containsHate = false;
+                // Simple profanity filter
+                const badWords = ['fuck','shit','damn','ass','bitch','cunt','dick','pussy','nigger','faggot','kys','nazi','aimbot','hack','cheat','retard'];
                 badWords.forEach(word => {
-                    if (lower.includes(word)) containsHate = true;
+                    const regex = new RegExp('\\b' + word + '\\b', 'gi');
+                    text = text.replace(regex, '****');
                 });
-
-                if (containsHate) {
-                    await punishHateSpeech(currentUser);
-                    return;
-                }
-
-                text = filterProfanity(text);
-                
-                let senderName;
-                if (currentUser.isAnonymous) {
-                    senderName = profile?.guestName || profile?.displayName || 'Guest';
-                } else {
-                    senderName = profile?.displayName || currentUser.displayName || currentUser.email;
-                }
-                if (profile?.vipLevel && profile.vipLevel > 0) {
-                    senderName = `<span class="vip-prefix">[VIP${profile.vipLevel}]</span> ${senderName}`;
-                }
-                if (profile?.role && profile.role !== 'member') {
-                    senderName += `<span class="role-badge">${profile.role}</span>`;
-                }
-
+                const profile = (await usersRef.child(currentUser.uid).once('value')).val() || {};
                 await messagesRef.push({
                     uid: currentUser.uid,
-                    name: senderName,
+                    name: profile.displayName || currentUser.displayName || 'User',
                     text,
                     timestamp: Date.now(),
-                    vipLevel: profile.vipLevel || 0,
-                    msgColor: profile?.msgColor || '#a0ffc0',
-                    msgBg: profile?.msgBg || '#1a2a1a',
-                    ownMsgColor: profile?.ownMsgColor || '#ffffff',
-                    ownMsgBg: profile?.ownMsgBg || '#003d1a'
+                    roleClass: profile.role ? (profile.role === 'owner' ? 'role-owner' : profile.role === 'admin' ? 'role-admin' : profile.role === 'mod' ? 'role-mod' : '') : ''
                 });
-                playSendSound();
                 messageInput.value = '';
             }
             sendBtn.addEventListener('click', sendMessage);
             messageInput.addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
 
-            logoutBtn.addEventListener('click', () => {
-                auth.signOut().then(() => location.reload());
-            });
+            // Logout
+            logoutBtn.addEventListener('click', () => auth.signOut());
+            logoutFromVerification.addEventListener('click', () => auth.signOut());
 
-            clearChatBtn.addEventListener('click', async () => {
-                const profile = await usersRef.child(currentUser.uid).once('value').then(s => s.val()) || {};
-                const role = profile.role || 'member';
-                const perm = permissions[role] || permissions.member;
-                if (!perm.canClearChat) return;
-                if (confirm('DELETE ALL MESSAGES?')) {
-                    await messagesRef.set(null);
-                    messagesContainer.innerHTML = '<div class="status-badge">💬 NO MESSAGES YET.</div>';
-                }
-            });
-
-            // Admin panel
-            adminPanelBtn.addEventListener('click', () => {
-                adminModal.classList.add('active');
-                loadUsersForAdmin();
-            });
-            closeAdminModal.addEventListener('click', () => adminModal.classList.remove('active'));
-
-            async function loadUsersForAdmin(filter = '') {
-                const snap = await usersRef.once('value');
-                const users = [];
-                snap.forEach(child => {
-                    const user = child.val();
-                    user.uid = child.key;
-                    users.push(user);
-                });
-                renderUsers(users, filter);
-            }
-
-            function renderUsers(users, filter) {
-                const currentUserProfile = users.find(u => u.uid === currentUser.uid);
-                const currentRole = currentUserProfile?.role || 'member';
-                const currentPerm = permissions[currentRole] || permissions.member;
-
-                usersListDiv.innerHTML = '';
-                const filtered = users.filter(u => (u.email || '').includes(filter) || (u.displayName || '').includes(filter));
-                filtered.forEach(user => {
-                    const row = document.createElement('div');
-                    row.className = 'user-row';
-                    const vipBadge = user.vipLevel && user.vipLevel > 0 ? `<span style="color:#ffaa00; animation:vipPulse 2s infinite;">[VIP${user.vipLevel}]</span>` : '';
-                    const isBanned = user.bannedUntil && user.bannedUntil > Date.now();
-                    const isMuted = user.mutedUntil && user.mutedUntil > Date.now();
-                    const roleOptions = ['owner','admin','mod','trialmod','member'].map(r => `<option value="${r}" ${user.role===r?'selected':''}>${r.toUpperCase()}</option>`).join('');
-
-                    row.innerHTML = `
-                        <input type="checkbox" class="user-checkbox" data-uid="${user.uid}">
-                        <div style="flex:1">
-                            <strong>${vipBadge} ${user.displayName || 'No name'}</strong>
-                            <div style="font-size:0.8rem;">${user.email || 'guest'} | Role: ${user.role || 'member'}</div>
-                            ${isBanned ? '<span style="color:#ff4d4d;">BANNED</span>' : ''}
-                            ${isMuted ? '<span style="color:#ffaa00;">MUTED</span>' : ''}
-                            ${user.disabled ? '<span style="color:#ffaa00;">DISABLED</span>' : ''}
-                        </div>
-                        ${currentPerm.canBan ? `<button onclick="openActionModal('${user.uid}', '${user.displayName || user.email}', 'ban', ${isBanned})">${isBanned ? 'UNBAN' : 'BAN'}</button>` : ''}
-                        ${currentPerm.canMute ? `<button onclick="openActionModal('${user.uid}', '${user.displayName || user.email}', 'mute', ${isMuted})">${isMuted ? 'UNMUTE' : 'MUTE'}</button>` : ''}
-                        ${currentPerm.canDisable ? `<button onclick="openActionModal('${user.uid}', '${user.displayName || user.email}', 'disable', ${user.disabled})">${user.disabled ? 'ENABLE' : 'DISABLE'}</button>` : ''}
-                        ${currentPerm.canDeleteUser ? `<button onclick="openActionModal('${user.uid}', '${user.displayName || user.email}', 'delete', false)">🗑️ DELETE</button>` : ''}
-                        ${currentPerm.canChangeRoles ? `
-                            <select onchange="changeRole('${user.uid}', this.value)">
-                                ${roleOptions}
-                            </select>
-                        ` : ''}
-                    `;
-                    usersListDiv.appendChild(row);
-                });
-            }
-
-            // Change role (only for owner)
-            window.changeRole = async (uid, newRole) => {
-                await usersRef.child(uid).update({ role: newRole });
-                loadUsersForAdmin(adminSearch.value);
-            };
-
-            // Single action modal (for ban/mute/disable/delete)
-            window.openActionModal = (uid, name, action, isActive) => {
-                let title = '';
-                if (action === 'ban') title = isActive ? 'UNBAN' : 'BAN';
-                else if (action === 'mute') title = isActive ? 'UNMUTE' : 'MUTE';
-                else if (action === 'disable') title = isActive ? 'ENABLE' : 'DISABLE';
-                else if (action === 'delete') title = 'DELETE USER';
-
-                actionTitle.innerText = title;
-                actionUserInfo.innerText = `User: ${name}`;
-                actionReason.value = '';
-                actionDuration.style.display = (action === 'ban' || action === 'mute') && !isActive ? 'block' : 'none';
-                actionModal.classList.add('active');
-
-                actionConfirmBtn.onclick = async () => {
-                    const duration = parseInt(actionDuration.value) || 20;
-                    const reason = actionReason.value.trim() || 'No reason provided';
-                    const updates = {};
-
-                    if (action === 'ban') {
-                        if (isActive) {
-                            updates.bannedUntil = null;
-                            updates.banReason = null;
-                            updates.bannedBy = null;
-                        } else {
-                            updates.bannedUntil = Date.now() + duration * 60000;
-                            updates.banReason = reason;
-                            updates.bannedBy = currentUser.displayName || currentUser.email;
-                        }
-                        playAdminSound();
-                    } else if (action === 'mute') {
-                        if (isActive) {
-                            updates.mutedUntil = null;
-                            updates.muteReason = null;
-                            updates.mutedBy = null;
-                        } else {
-                            updates.mutedUntil = Date.now() + duration * 60000;
-                            updates.muteReason = reason;
-                            updates.mutedBy = currentUser.displayName || currentUser.email;
-                        }
-                        playAdminSound();
-                    } else if (action === 'disable') {
-                        updates.disabled = !isActive;
-                        playAdminSound();
-                    } else if (action === 'delete') {
-                        const user = (await usersRef.child(uid).once('value')).val();
-                        if (user?.username) await usernamesRef.child(user.username).remove();
-                        await usersRef.child(uid).remove();
-                        playAdminSound();
-                        actionModal.classList.remove('active');
-                        loadUsersForAdmin(adminSearch.value);
-                        return;
-                    }
-
-                    await usersRef.child(uid).update(updates);
-                    actionModal.classList.remove('active');
-                    loadUsersForAdmin(adminSearch.value);
-                };
-                actionCancelBtn.onclick = () => actionModal.classList.remove('active');
-            };
-
-            // Bulk actions
-            selectAllBtn.addEventListener('click', () => {
-                document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = true);
-            });
-            deselectAllBtn.addEventListener('click', () => {
-                document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
-            });
-
-            applyBulkBtn.addEventListener('click', async () => {
-                const action = bulkActionSelect.value;
-                const reason = bulkReason.value.trim();
-                const checkboxes = document.querySelectorAll('.user-checkbox:checked');
-                const uids = Array.from(checkboxes).map(cb => cb.dataset.uid);
-                if (!action || uids.length === 0) return;
-
-                const now = Date.now();
-
-                for (const uid of uids) {
-                    if (action === 'ban') {
-                        await usersRef.child(uid).update({
-                            bannedUntil: now + 20 * 60000,
-                            banReason: reason || 'Bulk ban',
-                            bannedBy: currentUser.displayName || currentUser.email
-                        });
-                    } else if (action === 'mute') {
-                        await usersRef.child(uid).update({
-                            mutedUntil: now + 20 * 60000,
-                            muteReason: reason || 'Bulk mute',
-                            mutedBy: currentUser.displayName || currentUser.email
-                        });
-                    } else if (action === 'delete') {
-                        const user = (await usersRef.child(uid).once('value')).val();
-                        if (user?.username) await usernamesRef.child(user.username).remove();
-                        await usersRef.child(uid).remove();
-                    }
-                }
-                playAdminSound();
-                loadUsersForAdmin(adminSearch.value);
-            });
-
-            adminSearch.addEventListener('input', (e) => loadUsersForAdmin(e.target.value));
-
-            // Profile tabs
-            profileTabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    profileTabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    const target = tab.dataset.tab;
-                    profilePanes.forEach(pane => pane.classList.remove('active'));
-                    document.getElementById(`profile${target.charAt(0).toUpperCase() + target.slice(1)}`).classList.add('active');
-                });
-            });
-
+            // Profile
             profileBtn.addEventListener('click', async () => {
+                if (!currentUser) return;
                 const profile = (await usersRef.child(currentUser.uid).once('value')).val() || {};
                 editDisplayName.value = profile.displayName || '';
-                editEmail.value = '';
-                editPassword.value = '';
-                editConfirmPassword.value = '';
-                editMsgColor.value = profile.msgColor || '#a0ffc0';
-                editMsgBg.value = profile.msgBg || '#1a2a1a';
-                editOwnMsgColor.value = profile.ownMsgColor || '#ffffff';
-                editOwnMsgBg.value = profile.ownMsgBg || '#003d1a';
-                editDescription.value = profile.description || '';
-
-                const vip = profile.vipLevel || 0;
-                const canSetColor = vip >= 3;
-                const canSetBg = vip >= 7;
-                editMsgColor.disabled = !canSetColor;
-                editOwnMsgColor.disabled = !canSetColor;
-                editMsgBg.disabled = !canSetBg;
-                editOwnMsgBg.disabled = !canSetBg;
-                vipAppearanceMsg.innerText = canSetColor ? '' : 'VIP3+ required for name colors.';
-                if (!canSetColor) vipAppearanceMsg.innerText += ' VIP7+ required for background colors.';
-
+                voxiomDetectCheckbox.checked = profile.voxiomDetect || false;
+                voxiomGemsInput.value = profile.voxiomGems || 0;
+                voxiomUrlInput.value = profile.voxiomUrl || '';
                 profileModal.classList.add('active');
             });
             closeProfileModal.addEventListener('click', () => profileModal.classList.remove('active'));
 
+            // Status options
+            statusOptions.forEach(opt => {
+                opt.addEventListener('click', async () => {
+                    const status = opt.dataset.status;
+                    await usersRef.child(currentUser.uid).update({ status });
+                });
+            });
+
+            // Save profile
             saveProfileBtn.addEventListener('click', async () => {
-                profileError.innerText = '';
                 const newDisplayName = editDisplayName.value.trim();
-                const newEmail = editEmail.value.trim();
-                const newPassword = editPassword.value.trim();
-                const confirmPassword = editConfirmPassword.value.trim();
-                const newMsgColor = editMsgColor.value;
-                const newMsgBg = editMsgBg.value;
-                const newOwnMsgColor = editOwnMsgColor.value;
-                const newOwnMsgBg = editOwnMsgBg.value;
-                const newDescription = editDescription.value.trim().slice(0, 500);
-
                 const updates = {};
-
                 if (newDisplayName && newDisplayName !== currentUser.displayName) {
                     updates.displayName = newDisplayName;
                     await currentUser.updateProfile({ displayName: newDisplayName });
                 }
-
-                const profile = (await usersRef.child(currentUser.uid).once('value')).val();
-                const vip = profile?.vipLevel || 0;
-                if (vip >= 3) {
-                    updates.msgColor = newMsgColor;
-                    updates.ownMsgColor = newOwnMsgColor;
-                }
-                if (vip >= 7) {
-                    updates.msgBg = newMsgBg;
-                    updates.ownMsgBg = newOwnMsgBg;
-                }
-
-                updates.description = newDescription;
-
-                if (newEmail && newEmail !== currentUser.email) {
-                    try {
-                        await currentUser.updateEmail(newEmail);
-                        await currentUser.sendEmailVerification();
-                    } catch (e) {
-                        profileError.innerText = 'Email update failed: ' + e.message;
-                        return;
-                    }
-                }
-
-                if (newPassword && newPassword === confirmPassword) {
-                    try {
-                        await currentUser.updatePassword(newPassword);
-                    } catch (e) {
-                        profileError.innerText = 'Password update failed: ' + e.message;
-                        return;
-                    }
-                } else if (newPassword && newPassword !== confirmPassword) {
-                    profileError.innerText = 'Passwords do not match.';
-                    return;
-                }
-
-                if (Object.keys(updates).length > 0) {
-                    await usersRef.child(currentUser.uid).update(updates);
-                }
-
+                updates.voxiomDetect = voxiomDetectCheckbox.checked;
+                updates.voxiomGems = parseInt(voxiomGemsInput.value) || 0;
+                updates.voxiomUrl = voxiomUrlInput.value.trim() || '';
+                await usersRef.child(currentUser.uid).update(updates);
                 profileModal.classList.remove('active');
             });
-
-            // Message actions
-            window.editMessage = async (messageId) => {
-                const newText = prompt('EDIT YOUR MESSAGE:');
-                if (newText && newText.trim()) {
-                    const filtered = filterProfanity(newText.trim());
-                    await messagesRef.child(messageId).update({ 
-                        text: filtered, 
-                        edited: true, 
-                        editedAt: Date.now() 
-                    });
-                }
-            };
-
-            window.deleteMessage = async (messageId) => {
-                if (confirm('DELETE THIS MESSAGE?')) {
-                    await messagesRef.child(messageId).remove();
-                }
-            };
-
-            window.adminEditMessage = async (messageId) => {
-                const profile = await usersRef.child(currentUser.uid).once('value').then(s => s.val());
-                const role = profile?.role || 'member';
-                const perm = permissions[role] || permissions.member;
-                if (!perm.canEditAnyMessage) return;
-                const newText = prompt('ADMIN EDIT:');
-                if (newText && newText.trim()) {
-                    const filtered = filterProfanity(newText.trim());
-                    await messagesRef.child(messageId).update({ 
-                        text: filtered, 
-                        edited: true, 
-                        editedAt: Date.now() 
-                    });
-                }
-            };
-
-            window.adminDeleteMessage = async (messageId) => {
-                const profile = await usersRef.child(currentUser.uid).once('value').then(s => s.val());
-                const role = profile?.role || 'member';
-                const perm = permissions[role] || permissions.member;
-                if (!perm.canDeleteAnyMessage) return;
-                if (confirm('ADMIN DELETE THIS MESSAGE?')) {
-                    await messagesRef.child(messageId).remove();
-                }
-            };
 
             function escapeHtml(unsafe) {
                 return unsafe.replace(/[&<>"]/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;' }[m]));
